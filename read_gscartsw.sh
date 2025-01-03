@@ -33,7 +33,7 @@ GPIOCHIP="gpiochip0"
 # GPIO Pins
 # - These pins should be connected directly to the gscartsw EXT header
 #   (EXT logic high is 3.3v on gscartsw v5.2, for safety test yours first)
-# - Remember to connect gscartsw EXT Pin 1 (GND) to your board's GND
+# - Remember to connect gscartsw EXT Pin 1 (GND) to your device's GND
 PIN3=21 # gscartsw EXT Pin 7
 PIN2=20 # gscartsw EXT Pin 6
 PIN1=12 # gscartsw EXT Pin 5
@@ -41,8 +41,8 @@ PIN1=12 # gscartsw EXT Pin 5
 # This number is somewhat arbitrary, 12 works well in testing
 sample_count=12
 
-# All errors exit immediately
-set -e
+# All errors exit immediately and unset variables are errors
+set -euo pipefail
 
 # Needed to avoid calling tr (for speed)
 shopt -s extglob
@@ -51,8 +51,7 @@ shopt -s extglob
 # Check dependencies
 ########################################
 
-# Check dependencies
-if ! command -v gpioget 2>&1 >/dev/null; then
+if ! command -v gpioget >/dev/null 2>&1; then
   >&2 echo "Error: Required command 'gpioget' is not installed"
   exit 1
 fi
@@ -62,13 +61,13 @@ fi
 ########################################
 results=()
 
-for ((i = 1 ; i < $sample_count ; i++ )); do
+for ((i = 1 ; i <= $sample_count ; i++ )); do
   results+=("$(gpioget --bias=pull-down $GPIOCHIP $PIN3 $PIN2 $PIN1)")
 done
 
 unique_results=$(printf '%s\n' "${results[@]}" | sort -u)
-
-unique_results_count=$(echo "$unique_results" | wc -l)
+unique_results_newlines="${unique_results//[!$'\n']/}"
+unique_results_count=$((${#unique_results_newlines} + 1))
 
 if [ $unique_results_count -eq 1 ]; then
   input_binary="${unique_results//+([[:space:]])/}"

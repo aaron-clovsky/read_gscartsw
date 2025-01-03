@@ -1,15 +1,15 @@
-# Read the Current Input of gscartsw from EXT Header via GPIO
+# Read gscartsw input from EXT Header via GPIO
 
 ## MOTIVATION
 
 The [gscartsw](https://www.retrorgb.com/gscartsw.html)
 is an automatic [SCART](https://www.retrorgb.com/scarttodisplay.html) switch
-with an EXT header that supports reading and changing the current input.
+with an EXT header that supports reading and changing the current input. This
+script was written to allow this feature to be used in Linux.
 <br><br>
-This script will not change the current input but will read the current input.
-<br><br>
-This script was written in BASH and tested on Linux, using the latest
-32-bit Raspbian (as of 1/12025) on a Raspberry Pi Zero W.
+This script will not change the current input but will read the current input,
+it is written in BASH and has been tested on the latest 32-bit Raspbian
+(as of 1/1/2025) on a Raspberry Pi Zero W.
 
 ## CREDIT
 
@@ -38,15 +38,18 @@ EXT header pinout
 
 - Connect your device's GND to EXT Header Pin 1
 - Connect three of your device's GPIO pins to EXT Header Pins 5, 6 and 7
-- Modify ```read_gscartsw.sh``` to match your GPIO pins or connect as follows:
+- Modify ```read_gscartsw.sh``` to match your GPIO pins, or connect as follows:
   - Connect EXT Header Pin 5 to GPIO 12
   - Connect EXT Header Pin 6 to GPIO 20
   - Connect EXT Header Pin 7 to GPIO 21
+- On your device run ```gpiodetect``` to determine the name of your GPIO chip
+  - If your device's GPIO chip is not named "gpiochip0" then modify
+```read_gscartsw.sh``` accordingly
 - Copy ```read_gscartsw.sh``` to a directory on your device 
 - ```cd``` to the directory on your device that you copied
 ```read_gscartsw.sh``` to
 - Run ```chmod +x ./read_gscartsw.sh``` to make the script executable
-- Run ```./read_gscartsw.sh``` to run the script
+- To execute the script run ```./read_gscartsw.sh```
 
 #### NOTES
 
@@ -84,6 +87,6 @@ SCART input, or zero if no input is active.
 
 Errors are output to stderr.
 
-## License
-This script is licensed under the
+## LICENSE
+This software is licensed under the
 [MIT License](https://opensource.org/licenses/MIT).
